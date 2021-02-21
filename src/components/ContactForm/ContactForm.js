@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import phoneBookActions from '../../redux/phoneBook/phonebook-actions';
+
 import DublicateAlert from '../DublicateAlert/DublicateAlert';
 import Button from '../Button/Button';
 import { CSSTransition } from 'react-transition-group';
 
 import './ContactForm.css';
 
-export default class ContactForm extends Component {
+class ContactForm extends Component {
   static defaultProps = {};
 
   static propTypes = {
@@ -39,7 +42,8 @@ export default class ContactForm extends Component {
     const duplicate = this.props.contacts.filter(
       contact => contact.name === e.target.elements[0].value,
     );
-    if (duplicate.length) {
+
+    if (duplicate.length > 0) {
       this.setState({ dublicateName: !this.state.dublicateName });
 
       return setTimeout(() => {
@@ -47,13 +51,12 @@ export default class ContactForm extends Component {
           dublicateName: false,
         });
       }, 2500);
-
-      // return alert(`${duplicate[0].name} is already in contacts`);
     }
+    const { name, number } = this.state;
+    const onSubmit = this.props.onSubmit;
+    onSubmit(name, number);
 
-    this.props.onAddContact(this.state);
-
-    this.setState({ name: '', number: '', dublicateName: false });
+    this.setState({ name: '', number: '' });
   };
 
   render() {
@@ -99,3 +102,14 @@ export default class ContactForm extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  contacts: state.phoneBook.items,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSubmit: (name, number) =>
+    dispatch(phoneBookActions.addContact(name, number)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

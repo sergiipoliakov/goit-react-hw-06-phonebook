@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import phoneBookActions from '../../redux/phoneBook/phonebook-actions.js';
 import './Filter.css';
 
-export default function Filter({ value, onChangeFilter }) {
+const Filter = ({ value, onChangeFilter }) => {
   return (
     <div className="form">
       <label className="form-label">
@@ -10,21 +12,26 @@ export default function Filter({ value, onChangeFilter }) {
           type="text"
           className="form-input"
           value={value}
-          onChange={e => onChangeFilter(e.target.value)}
+          onChange={onChangeFilter}
         />
       </label>
     </div>
   );
-}
-
-Filter.defaultProps = {
-  value: 'noName',
-  number: '123 45 67',
 };
 
 Filter.propTypes = {
   value: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
 
   onChangeFilter: PropTypes.func,
 };
+
+const mapStateToProps = state => ({
+  value: state.phoneBook.filter,
+});
+
+const mapDispatchToProps = dispatch => ({
+  onChangeFilter: event =>
+    dispatch(phoneBookActions.changeFilter(event.target.value)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Filter);
