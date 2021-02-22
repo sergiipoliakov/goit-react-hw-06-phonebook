@@ -81,7 +81,6 @@ const mapStateToProps = state => {
   return {
     searchName: filter,
     contacts: state.phoneBook.items,
-
     filteredContacts: filteredContacts,
   };
 };
