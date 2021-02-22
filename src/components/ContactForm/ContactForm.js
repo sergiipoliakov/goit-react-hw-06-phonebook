@@ -39,24 +39,33 @@ class ContactForm extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const duplicate = this.props.contacts.filter(
-      contact => contact.name === e.target.elements[0].value,
-    );
-
-    if (duplicate.length > 0) {
-      this.setState({ dublicateName: !this.state.dublicateName });
-
-      return setTimeout(() => {
-        this.setState({
-          dublicateName: false,
-        });
-      }, 2500);
-    }
     const { name, number } = this.state;
-    const onSubmit = this.props.onSubmit;
-    onSubmit(name, number);
 
-    this.setState({ name: '', number: '' });
+    if (name !== '' && number !== '') {
+      const duplicate = this.props.contacts.filter(
+        contact => contact.name === e.target.elements[0].value,
+      );
+
+      if (duplicate.length > 0) {
+        this.setState({ dublicateName: !this.state.dublicateName });
+
+        return setTimeout(() => {
+          this.setState({
+            dublicateName: false,
+          });
+        }, 2500);
+      }
+
+      const onSubmit = this.props.onSubmit;
+      onSubmit(name, number);
+      this.setState({ name: '', number: '' });
+      return;
+    }
+    if (name === '') {
+      alert('write NAME!');
+    } else if (number === '') {
+      alert('write NUMBER!!');
+    }
   };
 
   render() {
